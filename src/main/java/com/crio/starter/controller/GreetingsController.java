@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequestMapping("/memes")
 public class GreetingsController {
 
   private final GreetingsService greetingsService;
@@ -30,7 +32,7 @@ public class GreetingsController {
  
 
   
-  @PostMapping("/memes/")
+  @PostMapping("/add")
   public ResponseEntity<PostMemeResponse> addMeme(@Valid @RequestBody GreetingsEntity entity) {  
     boolean duplicate = greetingsService.addMemetoRepo(entity); // Dupliate check by service class method.
     PostMemeResponse response = new PostMemeResponse(entity.getId()); // set Id value by all argument constructor.
@@ -43,7 +45,7 @@ public class GreetingsController {
 
 
 
-  @GetMapping("/memes")
+  @GetMapping("/show")
   public ResponseEntity<List<GreetingsEntity>> getTopHundredMemes() {
     if(greetingsRepository.findAll().isEmpty()){
       return ResponseEntity.ok().body(greetingsRepository.findAll());
@@ -52,7 +54,7 @@ public class GreetingsController {
   }
   
 
-  @GetMapping("/memes/{id}")
+  @GetMapping("/show/{id}")
   public ResponseEntity<GreetingsEntity> findMemeById(@PathVariable("id") String memeid) {
 
     Optional<GreetingsEntity> meme = greetingsService.getMemeById(memeid);
